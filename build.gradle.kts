@@ -1,9 +1,12 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
-    kotlin("jvm") version "1.9.21"
+    alias(libs.plugins.kotlin.jvm)
+    alias(libs.plugins.maven.publish)
 }
 
 group = "io.github.yamilmedina"
-version = "0.0.1"
+version = findProperty("VERSION_NAME") as String
 
 repositories {
     mavenLocal()
@@ -11,7 +14,7 @@ repositories {
 }
 
 dependencies {
-    testImplementation("org.jetbrains.kotlin:kotlin-test")
+    testImplementation(libs.kotlin.test)
 }
 
 tasks.test {
@@ -19,5 +22,24 @@ tasks.test {
 }
 
 kotlin {
-    jvmToolchain(11)
+    jvmToolchain(8)
+    compilerOptions {
+        jvmTarget.set(JvmTarget.JVM_1_8)
+    }
 }
+
+afterEvaluate {
+    mavenPublishing {
+        var mavenCentralUsername: String by extra { getEnvOrLocalProperty("OSSRH_USERNAME", "") }
+        var mavenCentralPassword: String by extra { getEnvOrLocalProperty("OSSRH_PASSWORD", "") }
+        var signingInMemoryKeyId: String by extra { getEnvOrLocalProperty("SIGNING_KEYID", "") }
+        var signingInMemoryKey: String by extra { getEnvOrLocalProperty("SIGNING_SECRETKEYRINGFILE", "") }
+        var signingInMemoryKeyPassword: String by extra { getEnvOrLocalProperty("SIGNING_PASSWORD", "") }
+        var isRelease: Boolean by extra { getEnvOrLocalProperty("IS_RELEASE", "false") == "true" }
+
+        if (findProperty("isRelease") == true) {
+            signAllPublications()
+        }
+    }
+}
+

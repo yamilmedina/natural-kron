@@ -32,9 +32,9 @@ class NaturalKronExpressionParserTest {
         val expression = "every day at 9am"
         val parsed = NaturalKronExpressionParser().parse(expression)
 
-        val expectedKronExpressionEveryFridayAt1015am = "0 0 9 * * *"
+        val expectedKronExpressionEveryFridayAt9am = "0 0 9 * * *"
         assertEquals("*", parsed.dayOfWeek)
-        assertEquals(expectedKronExpressionEveryFridayAt1015am, parsed.toString())
+        assertEquals(expectedKronExpressionEveryFridayAt9am, parsed.toString())
     }
 
     @Test
