@@ -13,6 +13,7 @@ jobs:
     if: github.repository == 'yamilmedina/natural-kron'
     name: Release to maven central
     runs-on: ubuntu-latest
+    environment: sonatype
     steps:
       - uses: actions/checkout@v4
 
