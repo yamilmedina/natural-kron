@@ -30,13 +30,7 @@ kotlin {
 
 afterEvaluate {
     mavenPublishing {
-        var mavenCentralUsername: String by extra { getEnvOrLocalProperty("OSSRH_USERNAME", "") }
-        var mavenCentralPassword: String by extra { getEnvOrLocalProperty("OSSRH_PASSWORD", "") }
-        var signingInMemoryKeyId: String by extra { getEnvOrLocalProperty("SIGNING_KEYID", "") }
-        var signingInMemoryKey: String by extra { getEnvOrLocalProperty("SIGNING_SECRETKEYRINGFILE", "") }
-        var signingInMemoryKeyPassword: String by extra { getEnvOrLocalProperty("SIGNING_PASSWORD", "") }
         var isRelease: Boolean by extra { getEnvOrLocalProperty("IS_RELEASE", "false") == "true" }
-
         if (findProperty("isRelease") == true) {
             signAllPublications()
         }
