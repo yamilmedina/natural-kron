@@ -1,7 +1,7 @@
 # Natural Kron
 
 [![codecov](https://codecov.io/gh/yamilmedina/natural-kron/graph/badge.svg?token=ZOCYYKQ0VP)](https://codecov.io/gh/yamilmedina/natural-kron)
-![Maven Central Version](https://img.shields.io/maven-central/v/io.github.yamilmedina/natural-kron?style=flat-square&color=green)
+[![Maven Central Version](https://img.shields.io/maven-central/v/io.github.yamilmedina/natural-kron?style=flat-square&color=green)](https://central.sonatype.com/artifact/io.github.yamilmedina/natural-kron/overview)
 
 A parser that converts natural (English) language to a cron expression in Kotlin.
 
