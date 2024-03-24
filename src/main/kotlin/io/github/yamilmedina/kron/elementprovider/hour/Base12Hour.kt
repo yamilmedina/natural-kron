@@ -15,7 +15,6 @@ internal open class Base12Hour : Base24Hour() {
     }
 
     override fun getHourElement(): String {
-        println("> 12 Hour segments: $segments")
         return when {
             segments[3].toLowerCase() == "pm" && segments[1].toInt() < 12 -> (segments[1].toInt() + 12).toString()
             segments[3].toLowerCase() == "am" && segments[1].toInt() == 12 -> 0.toString()

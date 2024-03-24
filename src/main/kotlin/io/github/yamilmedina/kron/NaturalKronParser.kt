@@ -46,7 +46,7 @@ class NaturalKronParser {
      * @throws ParseException if the string is not a valid cron expression
      * @return a [KronExpression] instance
      */
-    fun parse(string: String): KronExpression {
+    internal fun parse(string: String): KronExpression {
         val lowercaseString = string.toLowerCase()
         val mappings = mapOf(
             "@yearly" to KronExpression("0", "0", "1", "1", "*"),
@@ -143,25 +143,31 @@ class NaturalKronParser {
 
     /**
      * Converts a string to a valid cron expression
+     * @param string the string expression to parse
+     * @param style the style of the expression, default is [KronStyle.UNIX]
      *
-     * @param string the string to convert
      * @throws ParseException if the string is not a valid cron expression
      * @return a valid cron expression in string format
      */
-    fun fromString(string: String): String {
+    fun fromString(string: String, style: KronStyle = KronStyle.UNIX): String {
         val parser = NaturalKronParser()
-        return parser.parse(string).toString()
+        return when (style) {
+            KronStyle.UNIX -> parser.parse(string).toUnixStyle()
+            KronStyle.QUARTZ -> parser.parse(string).toQuartzStyle()
+        }
     }
 
     /**
      * Checks if a string is a valid cron expression
+     * @param string the expression to check
+     * @param style the style of the expression, default is [KronStyle.UNIX]
      */
-    fun isValid(string: String): Boolean {
+    fun isValid(string: String, style: KronStyle = KronStyle.UNIX): Boolean {
         if (string == "@reboot") {
             return true
         }
         return try {
-            fromString(string)
+            fromString(string, style)
             true
         } catch (e: ParseException) {
             false
