@@ -16,6 +16,7 @@ repositories {
 
 dependencies {
     testImplementation(libs.kotlin.test)
+    testImplementation(libs.junit.params)
 }
 
 tasks.test {
