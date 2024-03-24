@@ -3,7 +3,7 @@ package io.github.yamilmedina.kron.elementprovider
 import io.github.yamilmedina.kron.ExpressionElementProvider
 import java.util.regex.Pattern
 
-class DayNumber : ExpressionElementProvider {
+internal class DayNumber : ExpressionElementProvider {
     companion object {
         private const val PATTERN = "([0-9]?[0-9])(st|nd|rd|th)"
     }

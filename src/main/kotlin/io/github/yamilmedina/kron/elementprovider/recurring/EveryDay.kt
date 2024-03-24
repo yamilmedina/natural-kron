@@ -3,7 +3,7 @@ package io.github.yamilmedina.kron.elementprovider.recurring
 import io.github.yamilmedina.kron.ExpressionElementProvider
 import java.util.regex.Pattern
 
-class EveryDay : ExpressionElementProvider {
+internal class EveryDay : ExpressionElementProvider {
     companion object {
         private const val PATTERN =
             "(daily|(every|each|on)\\s(day|monday|tuesday|wednesday|thursday|friday|saturday|sunday)(?s))"

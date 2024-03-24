@@ -3,7 +3,7 @@ package io.github.yamilmedina.kron.elementprovider.recurring
 
 import io.github.yamilmedina.kron.ExpressionElementProvider
 
-class EveryWeek : ExpressionElementProvider {
+internal class EveryWeek : ExpressionElementProvider {
 
     companion object {
         private const val PATTERN = "(weekly|(every|each)\\sweek)"

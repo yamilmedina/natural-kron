@@ -1,6 +1,6 @@
 package io.github.yamilmedina.kron.elementprovider.hour
 
-open class Base12HourShort : Base12Hour() {
+internal open class Base12HourShort : Base12Hour() {
 
     companion object {
         const val PATTERN = "(1[012]|[1-9])\\s?(?i)\\s?(am|pm)"

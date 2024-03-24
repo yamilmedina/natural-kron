@@ -2,7 +2,7 @@ package io.github.yamilmedina.kron.elementprovider.recurring
 
 import io.github.yamilmedina.kron.ExpressionElementProvider
 
-class EveryMonth : ExpressionElementProvider {
+internal class EveryMonth : ExpressionElementProvider {
 
     companion object {
         private const val PATTERN =

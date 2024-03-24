@@ -2,7 +2,7 @@ package io.github.yamilmedina.kron.elementprovider.hour
 
 import io.github.yamilmedina.kron.ExpressionElementProvider
 
-open class Base24Hour : ExpressionElementProvider {
+internal open class Base24Hour : ExpressionElementProvider {
 
     companion object {
         const val PATTERN = "(2[0-3]|[01]?[0-9]):([0-5]?[0-9])"

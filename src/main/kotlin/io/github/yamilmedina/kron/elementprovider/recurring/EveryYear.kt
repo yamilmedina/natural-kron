@@ -2,7 +2,7 @@ package io.github.yamilmedina.kron.elementprovider.recurring
 
 import io.github.yamilmedina.kron.ExpressionElementProvider
 
-class EveryYear : ExpressionElementProvider {
+internal class EveryYear : ExpressionElementProvider {
 
     companion object {
         private const val PATTERN = "(yearly|annually|(every|each) ?([0-9]+)?year)"

@@ -3,7 +3,7 @@ package io.github.yamilmedina.kron.elementprovider.recurring
 import io.github.yamilmedina.kron.ExpressionElementProvider
 import java.util.regex.Pattern
 
-class EveryHour : ExpressionElementProvider {
+internal class EveryHour : ExpressionElementProvider {
     companion object {
         private const val PATTERN = "(hourly|(every|each)?\\s?([0-9]+)?\\shour)"
     }

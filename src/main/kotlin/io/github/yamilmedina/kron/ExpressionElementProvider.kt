@@ -1,6 +1,6 @@
 package  io.github.yamilmedina.kron
 
-interface ExpressionElementProvider {
+internal interface ExpressionElementProvider {
     /**
      * @param string
      * @return Boolean

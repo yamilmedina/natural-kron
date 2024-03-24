@@ -2,7 +2,7 @@ package io.github.yamilmedina.kron.elementprovider.hour
 
 import io.github.yamilmedina.kron.ExpressionElementProvider
 
-class Noon : ExpressionElementProvider {
+internal class Noon : ExpressionElementProvider {
     private var match: Boolean = false
 
     override fun matches(string: String): Boolean {

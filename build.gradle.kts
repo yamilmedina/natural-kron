@@ -16,7 +16,7 @@ repositories {
 
 dependencies {
     testImplementation(libs.kotlin.test)
-    testImplementation("org.junit.jupiter:junit-jupiter-params:5.10.0")
+    testImplementation(libs.junit.params)
 }
 
 tasks.test {
