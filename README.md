@@ -5,8 +5,6 @@
 
 A parser that converts natural (English) language to a cron expression written in Kotlin.
 
-This is initially a port from the original project written in PHP, see the credits[1] section.
-
 ## Installation ##
 
 You can add the library to your project using gradle:
@@ -33,13 +31,15 @@ assertEquals(expectedKronExpressionEveryDayAt9am, parsed)  // --> TRUE
 
 ### Using the Quartz style
 
-Why Quartz like style? If you work before with Quartz, you know that the cron expressions are different from the Unix.
-This means start counting from seconds, adding an initial field, and you can not use the `day of the week`
+Why Quartz like style? If you work with Quartz before, you know that the cron expressions are different from the Unix
+style.
+This means they start counting from seconds, adding an initial field to the left. Also, you can not use
+the `day of the week`
 and `day of the month` fields at the same time[^1].
 
-So, in case you want to use Quartz compatible expression, you can specify the style in the parser, like this:
-
 [^1]: [Quartz Notes Section](https://www.quartz-scheduler.org/documentation/quartz-2.3.0/tutorials/crontrigger.html#notes)
+
+Therefore, in case you want to use Quartz compatible expressions, you can specify the style in the parser, like this:
 
 ```kotlin
 import io.github.yamilmedina.kron.NaturalKronParser
