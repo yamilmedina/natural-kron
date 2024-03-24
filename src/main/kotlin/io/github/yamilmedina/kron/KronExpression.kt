@@ -74,22 +74,27 @@ internal class KronExpression(
 
     private fun resolveDayNumber(): String {
         return if (dayNumber?.toIntOrNull() == null && dayOfWeek?.toIntOrNull() == null) {
-            "*"// * and * -> *
+            "*" // * and * -> *
         } else if (hasDayNumber() && dayNumber?.toIntOrNull() != null && dayOfWeek?.toIntOrNull() == null) {
             dayNumber.toString() // number and * -> dayNumber
         } else if (dayNumber?.toIntOrNull() == null && dayOfWeek?.toIntOrNull() != null) {
             "?" // * and number -> ?
-        } else "*"
+        } else {
+            "*"
+        }
     }
 
     private fun resolveDayOfWeek(): String {
         return if (dayOfWeek?.toIntOrNull() == null && dayNumber?.toIntOrNull() == null) {
+            // * and * -> *
             dayNumber = "*"
             "?"
         } else if (dayOfWeek?.toIntOrNull() != null && dayNumber?.toIntOrNull() == null) {
+            // number and * -> dayOfWeek
             dayNumber = "?"
             dayOfWeek.toString()
         } else if (dayOfWeek?.toIntOrNull() == null && dayNumber?.toIntOrNull() != null) {
+            // * and number -> ?
             "?"
         } else {
             "*"
