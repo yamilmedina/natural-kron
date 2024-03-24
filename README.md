@@ -10,7 +10,7 @@ A parser that converts natural (English) language to a cron expression in Kotlin
 You can add the library to your project using gradle:
 
 ```kotlin
-implementation("io.github.yamilmedina:natural-kron:0.0.1")
+implementation("io.github.yamilmedina:natural-kron:0.1.0")
 ```
 
 ## Usage ##
@@ -21,7 +21,7 @@ import io.github.yamilmedina.kron.NaturalKronParser
 val expression = "every day at 9am"
 val parsed = NaturalKronParser().parse(expression)
 
-val expectedKronExpressionEveryDayAt9am = "0 0 9 * * *"
+val expectedKronExpressionEveryDayAt9am = "0 9 * * *"
 assertEquals("*", parsed.dayOfWeek) // --> every day cron expression
 assertEquals(expectedKronExpressionEveryDayAt9am, parsed.toString())  // --> TRUE
 ```
