@@ -1,6 +1,6 @@
 package io.github.yamilmedina.kron
 
-class KronExpression(
+internal class KronExpression(
     var minute: String? = null,
     var hour: String? = null,
     var dayNumber: String? = null,
@@ -96,13 +96,5 @@ class KronExpression(
         }
     }
 
-    // todo, hasDayNumber =  "number" or "*" then DayOfWeek can only be "?"
-    // todo, hasDayOfWeek =  "number" or "*" then DayNumber can only be "?"
-
-    // hasDayNumber && hasDayOfWeek -> DayNumber = "*" && DayOfWeek = "?"
-    // hasDayNumber && !hasDayOfWeek -> DayNumber = "number" or "*" && DayOfWeek = "*"
-
-
 }
-
 
