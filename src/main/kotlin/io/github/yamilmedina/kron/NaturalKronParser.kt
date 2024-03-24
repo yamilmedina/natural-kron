@@ -39,46 +39,53 @@ class NaturalKronParser {
         Base24Hour()
     )
 
-    fun parse(string: String): CronExpression {
+    /**
+     * Parses a string to a KronExpression
+     *
+     * @param string the string to parse
+     * @throws ParseException if the string is not a valid cron expression
+     * @return a [KronExpression] instance
+     */
+    fun parse(string: String): KronExpression {
         val lowercaseString = string.toLowerCase()
         val mappings = mapOf(
-            "@yearly" to CronExpression("0", "0", "1", "1", "*"),
-            "@annually" to CronExpression("0", "0", "1", "1", "*"),
-            "@monthly" to CronExpression("0", "0", "1", "*", "*"),
-            "@weekly" to CronExpression("0", "0", "*", "*", "0"),
-            "@midnight" to CronExpression("0", "0", "*", "*", "*"),
-            "@daily" to CronExpression("0", "0", "*", "*", "*"),
-            "@hourly" to CronExpression("0", "*", "*", "*", "*")
+            "@yearly" to KronExpression("0", "0", "1", "1", "*"),
+            "@annually" to KronExpression("0", "0", "1", "1", "*"),
+            "@monthly" to KronExpression("0", "0", "1", "*", "*"),
+            "@weekly" to KronExpression("0", "0", "*", "*", "0"),
+            "@midnight" to KronExpression("0", "0", "*", "*", "*"),
+            "@daily" to KronExpression("0", "0", "*", "*", "*"),
+            "@hourly" to KronExpression("0", "*", "*", "*", "*")
         )
 
         if (mappings.containsKey(lowercaseString)) {
             return mappings[lowercaseString]!!
         }
 
-        val expression = CronExpression()
+        val expression = KronExpression()
         var isMinuteElementLocked = false
         var isHourElementLocked = false
         var isDayNumberElementLocked = false
         var isMonthElementLocked = false
         var isDayOfWeekElementLocked = false
 
-        val shouldUpdateMinute: (CronExpression, ExpressionElementProvider) -> Boolean = { expression, subParser ->
+        val shouldUpdateMinute: (KronExpression, ExpressionElementProvider) -> Boolean = { expression, subParser ->
             subParser.canProvideMinute() && !isMinuteElementLocked
         }
 
-        val shouldUpdateHour: (CronExpression, ExpressionElementProvider) -> Boolean = { expression, subParser ->
+        val shouldUpdateHour: (KronExpression, ExpressionElementProvider) -> Boolean = { expression, subParser ->
             subParser.canProvideHour() && !isHourElementLocked
         }
 
-        val shouldUpdateDayNumber: (CronExpression, ExpressionElementProvider) -> Boolean = { expression, subParser ->
+        val shouldUpdateDayNumber: (KronExpression, ExpressionElementProvider) -> Boolean = { expression, subParser ->
             subParser.canProvideDayNumber() && !isDayNumberElementLocked
         }
 
-        val shouldUpdateMonth: (CronExpression, ExpressionElementProvider) -> Boolean = { expression, subParser ->
+        val shouldUpdateMonth: (KronExpression, ExpressionElementProvider) -> Boolean = { expression, subParser ->
             subParser.canProvideMonth() && !isMonthElementLocked
         }
 
-        val shouldUpdateDayOfWeek: (CronExpression, ExpressionElementProvider) -> Boolean = { expression, subParser ->
+        val shouldUpdateDayOfWeek: (KronExpression, ExpressionElementProvider) -> Boolean = { expression, subParser ->
             subParser.canProvideDayOfWeek() && !isDayOfWeekElementLocked
         }
 
@@ -128,17 +135,27 @@ class NaturalKronParser {
 
         val validPattern = Pattern.compile(VALID_PATTERN)
         if (expression.hasNothing() || !validPattern.matcher(expression.toString()).matches()) {
-            throw ParseException("Unable to parse \"$string\", expression is: $expression", 0)
+            throw ParseException("Unable to parse \"$string\", expression is: $expression", Int.MIN_VALUE)
         }
 
         return expression
     }
 
+    /**
+     * Converts a string to a valid cron expression
+     *
+     * @param string the string to convert
+     * @throws ParseException if the string is not a valid cron expression
+     * @return a valid cron expression in string format
+     */
     fun fromString(string: String): String {
         val parser = NaturalKronParser()
         return parser.parse(string).toString()
     }
 
+    /**
+     * Checks if a string is a valid cron expression
+     */
     fun isValid(string: String): Boolean {
         if (string == "@reboot") {
             return true

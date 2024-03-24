@@ -1,6 +1,6 @@
 package io.github.yamilmedina.kron
 
-class CronExpression(
+class KronExpression(
     var minute: String? = null,
     var hour: String? = null,
     var dayNumber: String? = null,
@@ -10,35 +10,35 @@ class CronExpression(
 
     fun hasMinute(): Boolean = minute != null
 
-    fun setMinute(minute: String): CronExpression {
+    fun setMinute(minute: String): KronExpression {
         this.minute = minute
         return this
     }
 
     fun hasHour(): Boolean = hour != null
 
-    fun setHour(hour: String): CronExpression {
+    fun setHour(hour: String): KronExpression {
         this.hour = hour
         return this
     }
 
     fun hasDayNumber(): Boolean = dayNumber != null
 
-    fun setDayNumber(dayNumber: String): CronExpression {
+    fun setDayNumber(dayNumber: String): KronExpression {
         this.dayNumber = dayNumber
         return this
     }
 
     fun hasMonth(): Boolean = month != null
 
-    fun setMonth(month: String): CronExpression {
+    fun setMonth(month: String): KronExpression {
         this.month = month
         return this
     }
 
     fun hasDayOfWeek(): Boolean = dayOfWeek != null
 
-    fun setDayOfWeek(dayOfWeek: String): CronExpression {
+    fun setDayOfWeek(dayOfWeek: String): KronExpression {
         this.dayOfWeek = dayOfWeek
         return this
     }
