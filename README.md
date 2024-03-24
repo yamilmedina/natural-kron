@@ -16,10 +16,10 @@ implementation("io.github.yamilmedina:natural-kron:0.0.1")
 ## Usage ##
 
 ```kotlin
-import io.github.yamilmedina.naturalkron.NaturalKron
+import io.github.yamilmedina.kron.NaturalKronParser
 
 val expression = "every day at 9am"
-val parsed = NaturalKronExpressionParser().parse(expression)
+val parsed = NaturalKronParser().parse(expression)
 
 val expectedKronExpressionEveryDayAt9am = "0 0 9 * * *"
 assertEquals("*", parsed.dayOfWeek) // --> every day cron expression
