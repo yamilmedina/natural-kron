@@ -4,13 +4,27 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.EnumSource
 
-class NaturalKronParserTest {
+class NaturalKronDefaultStyleParserTest {
 
     @ParameterizedTest
     @EnumSource(TestParams::class)
     fun testParser(params: TestParams) {
         val actual = io.github.yamilmedina.kron.NaturalKronParser().parse(params.input)
         assertEquals(params.expected, actual.toString(), "Failed for input: <${params.input}>")
+    }
+
+    @ParameterizedTest
+    @EnumSource(TestParams::class)
+    fun testParserFromString(params: TestParams) {
+        val actual = io.github.yamilmedina.kron.NaturalKronParser().fromString(params.input)
+        assertEquals(params.expected, actual, "Failed for input: <${params.input}>")
+    }
+
+    @ParameterizedTest
+    @EnumSource(TestParams::class)
+    fun testIsValid(params: TestParams) {
+        val actual = io.github.yamilmedina.kron.NaturalKronParser().isValid(params.input)
+        assertEquals(true, actual, "Failed for input: <${params.input}>")
     }
 
     companion object {
