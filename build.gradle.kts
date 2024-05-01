@@ -24,8 +24,8 @@ dependencies {
 
 sourceSets {
     main {
-        java.srcDir(file("${rootDir}/generated/antlr/"))
-        kotlin.srcDir(file("${rootDir}/generated/antlr/"))
+        java.srcDir(file("${project.layout.buildDirectory.get()}/generated/antlr/"))
+        kotlin.srcDir(file("${project.layout.buildDirectory.get()}/generated/antlr/"))
     }
 }
 
@@ -33,11 +33,7 @@ tasks.generateGrammarSource {
     maxHeapSize = "64m"
     arguments = arguments + listOf("-visitor", "-long-messages")
     arguments = arguments + listOf("-package", "io.github.yamilmedina.kron.antlr")
-    outputDirectory = file("${rootDir}/generated/antlr/io/github/yamilmedina/kron/antlr")
-}
-
-tasks.clean {
-    delete = setOf(layout.buildDirectory.get(), file("${rootDir}/generated"))
+    outputDirectory = file("${project.layout.buildDirectory.get()}/generated/antlr/io/github/yamilmedina/kron/antlr")
 }
 
 tasks.test {
@@ -49,7 +45,7 @@ tasks.compileKotlin {
 }
 
 tasks.compileTestKotlin {
-    dependsOn(tasks.generateGrammarSource)
+    dependsOn(tasks.generateTestGrammarSource)
 }
 
 kotlin {

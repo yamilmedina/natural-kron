@@ -43,6 +43,3 @@ bin/
 
 ### Mac OS ###
 .DS_Store
-
-## ANTLR
-/generated
