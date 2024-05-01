@@ -1,12 +1,6 @@
 package io.github.yamilmedina.kron
 
-import io.github.yamilmedina.kron.antlr.ArrayInitLexer
-import io.github.yamilmedina.kron.antlr.ArrayInitParser
-import java.util.*
-import org.antlr.v4.runtime.CharStreams
-import org.antlr.v4.runtime.CommonTokenStream
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.EnumSource
 
@@ -31,17 +25,6 @@ class NaturalKronQuartzStyleParserTest {
     fun testIsValid(params: TestParams) {
         val actual = io.github.yamilmedina.kron.NaturalKronParser().isValid(params.input, KronStyle.QUARTZ)
         assertEquals(true, actual, "Failed for input: <${params.input}>")
-    }
-
-    @Test
-    fun testAntlrParser() {
-        val input = CharStreams.fromString(UUID.randomUUID().toString())
-        val lexer = ArrayInitLexer(input)
-        val tokens = CommonTokenStream(lexer)
-        val parser = ArrayInitParser(tokens)
-
-        val tree = parser.init()
-        println(tree.toStringTree(parser))
     }
 
     companion object {

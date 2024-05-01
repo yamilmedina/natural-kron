@@ -22,6 +22,13 @@ dependencies {
     testImplementation(libs.junit.params)
 }
 
+sourceSets {
+    main {
+        java.srcDir(file("${rootDir}/generated/antlr/"))
+        kotlin.srcDir(file("${rootDir}/generated/antlr/"))
+    }
+}
+
 tasks.generateGrammarSource {
     maxHeapSize = "64m"
     arguments = arguments + listOf("-visitor", "-long-messages")
@@ -30,14 +37,7 @@ tasks.generateGrammarSource {
 }
 
 tasks.clean {
-    delete = setOf(file("${rootDir}/generated"))
-}
-
-sourceSets {
-    main {
-        java.srcDir(file("${rootDir}/generated/antlr/"))
-        kotlin.srcDir(file("${rootDir}/generated/antlr/"))
-    }
+    delete = setOf(layout.buildDirectory.get(), file("${rootDir}/generated"))
 }
 
 tasks.test {
@@ -48,7 +48,7 @@ tasks.compileKotlin {
     dependsOn(tasks.generateGrammarSource)
 }
 
-tasks.compileJava {
+tasks.compileTestKotlin {
     dependsOn(tasks.generateGrammarSource)
 }
 
