@@ -51,4 +51,19 @@ class NaturalKronAntlrGenParserTest {
         assertEquals("monday", naturalCron.date().DAYS().toString())
         assertEquals("15:00", naturalCron.clock().HOUR().toString())
     }
+
+    @Test
+    fun testAntlrParser_ShouldIgnoreCase() {
+        val input = CharStreams.fromString("eVery Monday at 15:00")
+        val lexer = NaturalCronLexer(input)
+        val tokens = CommonTokenStream(lexer)
+
+        val parser = NaturalCronParser(tokens)
+        val naturalCron = parser.naturalCron()
+
+        assertNotNull(naturalCron.date().DYNAMIC_SCHEDULE())
+        assertEquals("every", naturalCron.date().DYNAMIC_SCHEDULE().toString().toLowerCase())
+        assertEquals("Monday", naturalCron.date().DAYS().toString())
+        assertEquals("15:00", naturalCron.clock().HOUR().toString())
+    }
 }

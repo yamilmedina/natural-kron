@@ -1,5 +1,9 @@
 grammar NaturalCron;
 
+options {
+    caseInsensitive = true;
+}
+
 // Parser rules
 naturalCron: date at clock;
 at: AT;
