@@ -32,8 +32,8 @@ sourceSets {
 tasks.generateGrammarSource {
     maxHeapSize = "64m"
     arguments = arguments + listOf("-visitor", "-long-messages")
-    arguments = arguments + listOf("-package", "io.github.yamilmedina.kron.antlr")
-    outputDirectory = file("${project.layout.buildDirectory.get()}/generated/antlr/io/github/yamilmedina/kron/antlr")
+    arguments = arguments + listOf("-package", "io.github.yamilmedina.kron.internal.antlr")
+    outputDirectory = file("${project.layout.buildDirectory.get()}/generated/antlr/io/github/yamilmedina/kron/internal/antlr")
 }
 
 tasks.test {

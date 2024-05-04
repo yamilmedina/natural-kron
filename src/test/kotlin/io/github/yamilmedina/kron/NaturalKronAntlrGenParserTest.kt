@@ -1,7 +1,7 @@
 package io.github.yamilmedina.kron
 
-import io.github.yamilmedina.kron.antlr.NaturalCronLexer
-import io.github.yamilmedina.kron.antlr.NaturalCronParser
+import io.github.yamilmedina.kron.internal.antlr.NaturalCronLexer
+import io.github.yamilmedina.kron.internal.antlr.NaturalCronParser
 import org.antlr.v4.runtime.CharStreams
 import org.antlr.v4.runtime.CommonTokenStream
 import org.junit.jupiter.api.Test
