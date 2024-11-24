@@ -10,7 +10,7 @@ A parser that converts natural (English) language to a cron quartz expressions, 
 You can add the library to your project using gradle:
 
 ```kotlin
-implementation("io.github.yamilmedina:natural-kron:1.0.0")
+implementation("io.github.yamilmedina:natural-kron:2.0.0")
 ```
 
 ## Motif ##
@@ -45,7 +45,7 @@ import io.github.yamilmedina.kron.NaturalKronParser
 val input = "every saturday at 10:11"
 val cronExpression = NaturalKronParser().parse(input)
 
-assertEquals("0 11 10 ? * SAT", cronExpression)---> This is a valid Quartz cron expression
+assertEquals("0 11 10 ? * SAT", cronExpression) //---> This is a valid Quartz cron expression
 ```
 
 ## Implementation details ##
@@ -64,6 +64,14 @@ This is a starting point for now, so these things are not supported yet (most li
 - step every x minutes/hours/days/weeks/months (e.g. `every 5 minutes` -> `0 0/5 * ? * *`)
 - ranges of values (e.g. `every day between 10 and 20` -> `0 0 0 10-20 * ?`)
 - last day of the month (e.g. `every last day of the month` -> `0 0 0 L * ?`)
+
+## Note ##
+
+Up to version 1.0.1, the library was a direct port of [this library](https://github.com/bpolaszek/natural-cron-expression/)
+from PHP to Kotlin.
+The library was refactored to be more Kotlin idiomatic and to add some features, but rewritten completely from scratch,
+due to lack of test and not scalable code.
+In version 2.0.0, the library was refactored to use ANTLR4 to parse the input.
 
 ## License ##
 
