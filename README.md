@@ -3,7 +3,7 @@
 [![codecov](https://codecov.io/gh/yamilmedina/natural-kron/graph/badge.svg?token=ZOCYYKQ0VP)](https://codecov.io/gh/yamilmedina/natural-kron)
 [![Maven Central Version](https://img.shields.io/maven-central/v/io.github.yamilmedina/natural-kron?style=flat-square&color=green)](https://central.sonatype.com/artifact/io.github.yamilmedina/natural-kron/overview)
 
-A parser that converts natural (English) language to a cron expression written in Kotlin.
+A parser that converts natural (English) language to a cron quartz expressions, written in Kotlin.
 
 ## Installation ##
 
@@ -13,59 +13,57 @@ You can add the library to your project using gradle:
 implementation("io.github.yamilmedina:natural-kron:1.0.0")
 ```
 
-## Usage ##
+## Motif ##
 
-### Using the Unix cron style
+This library is intended to be used in applications where the user can define cron expressions in a more natural way.
+Some examples, where you can use this library are, but not limited to:
 
-This is the default if you don't specify the style of the output:
+- Chatbots
+- Scheduling applications for non-technical users
+- Cron expression generators
+- Scheduling tasks in a more human-readable way
 
-```kotlin
-import io.github.yamilmedina.kron.NaturalKronParser
+#### Why Quartz like style and not Unix like?
 
-val expression = "every day at 9am"
-val parsed = NaturalKronParser().fromString(expression)
+If you worked before with scheduling tasks for the jvm, you probably heard/know
+about [Quartz](https://github.com/quartz-scheduler). Quartz is a powerful library for this job. But there is a small
+catch, Quartz uses a different cron expression style
+than Unix.
 
-val expectedKronExpressionEveryDayAt9am = "0 9 * * *"
-assertEquals(expectedKronExpressionEveryDayAt9am, parsed)  // --> TRUE
-```
-
-### Using the Quartz style
-
-Why Quartz like style? If you work with Quartz before, you know that the cron expressions are different from the Unix
-style.
 This means they start counting from seconds, adding an initial field to the left. Also, you can not use
-the `day of the week`
-and `day of the month` fields at the same time[^1].
+the `day of the week` and `day of the month` fields at the same time[^1].
 
 [^1]: [Quartz Notes Section](https://www.quartz-scheduler.org/documentation/quartz-2.3.0/tutorials/crontrigger.html#notes)
 
-Therefore, in case you want to use Quartz compatible expressions, you can specify the style in the parser, like this:
+#### Usage
+
+To use the library, you can specify the style in the parser, like this:
 
 ```kotlin
 import io.github.yamilmedina.kron.NaturalKronParser
-import io.github.yamilmedina.kron.KronStyle
 
-val expression = "every day at 9am"
-val parsed = NaturalKronParser().fromString(expression, KronStyle.QUARTZ)
+val input = "every saturday at 10:11"
+val cronExpression = NaturalKronParser().parse(input)
 
-val expectedKronExpressionEveryDayAt9am = "0 0 9 * * ?"
-assertEquals(expectedKronExpressionEveryDayAt9am, parsed)  // --> TRUE
+assertEquals("0 11 10 ? * SAT", cronExpression)---> This is a valid Quartz cron expression
 ```
+
+## Implementation details ##
+
+This library uses an ANTLR4 grammar to parse the input. The grammar is defined in the `CronGrammar.g4` file.
+The generated files are included in the project, but are not intended to be used directly, that's why they are in
+the `internal` package (good old sun days xD), therefore, **don't use it**, there might be gone, or changed in the
+future.
 
 ## Known limitations ##
 
-This project is ported "as-is" from the original project, and it has some limitations:
+This library is a side quest project born into the requirements of a bigger project.
+This is a starting point for now, so these things are not supported yet (most likely I missed some):
 
-If you provide an invalid expression and a valid time or day part, the parser will return a valid cron expression with
-default to every day. For example, `evaery venus at 5am` (note the typo) will return `0 5 * * *` because the time part
-is valid.
-
-The plan is to fix this in the future, and enhance the code.
-
-## Credits ##
-
-This is a port from the project https://github.com/bpolaszek/natural-cron-expression/ written in PHP, to the kotlin
-language.
+- yearly expressions (e.g. `every day during 2005` -> `0 0 0 ? * * 2005`)
+- step every x minutes/hours/days/weeks/months (e.g. `every 5 minutes` -> `0 0/5 * ? * *`)
+- ranges of values (e.g. `every day between 10 and 20` -> `0 0 0 10-20 * ?`)
+- last day of the month (e.g. `every last day of the month` -> `0 0 0 L * ?`)
 
 ## License ##
 

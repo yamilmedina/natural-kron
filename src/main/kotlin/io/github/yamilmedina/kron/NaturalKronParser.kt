@@ -1,178 +1,44 @@
 package io.github.yamilmedina.kron
 
-import io.github.yamilmedina.kron.elementprovider.DayNumber
-import io.github.yamilmedina.kron.elementprovider.hour.Base12Hour
-import io.github.yamilmedina.kron.elementprovider.hour.Base12HourShort
-import io.github.yamilmedina.kron.elementprovider.hour.Base24Hour
-import io.github.yamilmedina.kron.elementprovider.hour.Midnight
-import io.github.yamilmedina.kron.elementprovider.hour.Noon
-import io.github.yamilmedina.kron.elementprovider.recurring.EveryDay
-import io.github.yamilmedina.kron.elementprovider.recurring.EveryDayNumber
-import io.github.yamilmedina.kron.elementprovider.recurring.EveryHour
-import io.github.yamilmedina.kron.elementprovider.recurring.EveryMinute
-import io.github.yamilmedina.kron.elementprovider.recurring.EveryMonth
-import io.github.yamilmedina.kron.elementprovider.recurring.EveryWeek
-import io.github.yamilmedina.kron.elementprovider.recurring.EveryYear
-import java.text.ParseException
-import java.util.regex.Pattern
+import io.github.yamilmedina.kron.internal.antlr.CronGrammarLexer
+import io.github.yamilmedina.kron.internal.antlr.CronGrammarParser
+import org.antlr.v4.runtime.CharStreams
+import org.antlr.v4.runtime.CommonTokenStream
 
-class NaturalKronParser {
-
-    companion object {
-        const val VALID_PATTERN =
-            "^(@reboot|@yearly|@annually|@monthly|@weekly|@daily|@midnight|@hourly|((?:[1-9]?\\d|\\*)\\s*(?:(?:[\\/\\-][1-9]?\\d)|(?:,[1-9]?\\d)+)?\\s*){5})$"
-    }
-
-    private val elementProviders: List<ExpressionElementProvider> = listOf(
-        EveryYear(),
-        EveryMonth(),
-        EveryWeek(),
-        EveryDayNumber(),
-        EveryDay(),
-        EveryHour(),
-        EveryMinute(),
-        DayNumber(),
-        Noon(),
-        Midnight(),
-        Base12Hour(),
-        Base12HourShort(),
-        Base24Hour()
-    )
-
+/**
+ * The NaturalKronParser interface provides a method to parse natural language expressions into cron expressions.
+ * The cron expressions are returned in Quartz syntax.
+ * @see <a href="https://www.quartz-scheduler.org/documentation/quartz-2.3.0/tutorials/crontrigger.html#format">Cron Expressions Format- Quartz</a>
+ *
+ * You can parse for now expressions like:
+ * - every workday at 10:15
+ * - every saturday at 10:11
+ * - every day at 09:00
+ */
+interface NaturalKronParser {
     /**
-     * Parses a string to a KronExpression
+     * Parses a natural language expression into a cron expression.
      *
-     * @param string the string to parse
-     * @throws ParseException if the string is not a valid cron expression
-     * @return a [KronExpression] instance
-     */
-    internal fun parse(string: String): KronExpression {
-        val lowercaseString = string.toLowerCase()
-        val mappings = mapOf(
-            "@yearly" to KronExpression("0", "0", "1", "1", "*"),
-            "@annually" to KronExpression("0", "0", "1", "1", "*"),
-            "@monthly" to KronExpression("0", "0", "1", "*", "*"),
-            "@weekly" to KronExpression("0", "0", "*", "*", "0"),
-            "@midnight" to KronExpression("0", "0", "*", "*", "*"),
-            "@daily" to KronExpression("0", "0", "*", "*", "*"),
-            "@hourly" to KronExpression("0", "*", "*", "*", "*")
-        )
-
-        if (mappings.containsKey(lowercaseString)) {
-            return mappings[lowercaseString]!!
-        }
-
-        val expression = KronExpression()
-        var isMinuteElementLocked = false
-        var isHourElementLocked = false
-        var isDayNumberElementLocked = false
-        var isMonthElementLocked = false
-        var isDayOfWeekElementLocked = false
-
-        val shouldUpdateMinute: (KronExpression, ExpressionElementProvider) -> Boolean = { expression, subParser ->
-            subParser.canProvideMinute() && !isMinuteElementLocked
-        }
-
-        val shouldUpdateHour: (KronExpression, ExpressionElementProvider) -> Boolean = { expression, subParser ->
-            subParser.canProvideHour() && !isHourElementLocked
-        }
-
-        val shouldUpdateDayNumber: (KronExpression, ExpressionElementProvider) -> Boolean = { expression, subParser ->
-            subParser.canProvideDayNumber() && !isDayNumberElementLocked
-        }
-
-        val shouldUpdateMonth: (KronExpression, ExpressionElementProvider) -> Boolean = { expression, subParser ->
-            subParser.canProvideMonth() && !isMonthElementLocked
-        }
-
-        val shouldUpdateDayOfWeek: (KronExpression, ExpressionElementProvider) -> Boolean = { expression, subParser ->
-            subParser.canProvideDayOfWeek() && !isDayOfWeekElementLocked
-        }
-
-        for (elementProvider in elementProviders) {
-            if (elementProvider.matches(lowercaseString)) {
-                if (shouldUpdateMinute(expression, elementProvider)) {
-                    expression.minute = elementProvider.getMinuteElement()
-                }
-
-                if (shouldUpdateHour(expression, elementProvider)) {
-                    expression.hour = elementProvider.getHourElement()
-                }
-
-                if (shouldUpdateDayNumber(expression, elementProvider)) {
-                    expression.dayNumber = elementProvider.getDayNumberElement()
-                }
-
-                if (shouldUpdateMonth(expression, elementProvider)) {
-                    expression.month = elementProvider.getMonthElement()
-                }
-
-                if (shouldUpdateDayOfWeek(expression, elementProvider)) {
-                    expression.dayOfWeek = elementProvider.getDayOfWeekElement()
-                }
-
-                if (elementProvider.isMinuteElementLocked()) {
-                    isMinuteElementLocked = true
-                }
-
-                if (elementProvider.isHourElementLocked()) {
-                    isHourElementLocked = true
-                }
-
-                if (elementProvider.isDayNumberElementLocked()) {
-                    isDayNumberElementLocked = true
-                }
-
-                if (elementProvider.isMonthElementLocked()) {
-                    isMonthElementLocked = true
-                }
-
-                if (elementProvider.isDayOfWeekElementLocked()) {
-                    isDayOfWeekElementLocked = true
-                }
-            }
-        }
-
-        val validPattern = Pattern.compile(VALID_PATTERN)
-        if (expression.hasNothing() || !validPattern.matcher(expression.toString()).matches()) {
-            throw ParseException("Unable to parse \"$string\", expression is: $expression", Int.MIN_VALUE)
-        }
-
-        return expression
-    }
-
-    /**
-     * Converts a string to a valid cron expression
-     * @param string the string expression to parse
-     * @param style the style of the expression, default is [KronStyle.UNIX]
+     * @param naturalKronSchedule the natural language expression to parse. e.g. "every workday at 10:15"
+     * @return the cron expression in Quartz syntax. e.g. "0 15 10 ? * MON-FRI"
      *
-     * @throws ParseException if the string is not a valid cron expression
-     * @return a valid cron expression in string format
+     * @throws KronParsingException if an error occurs while parsing the expression.
      */
-    fun fromString(string: String, style: KronStyle = KronStyle.UNIX): String {
-        val parser = NaturalKronParser()
-        return when (style) {
-            KronStyle.UNIX -> parser.parse(string).toUnixStyle()
-            KronStyle.QUARTZ -> parser.parse(string).toQuartzStyle()
-        }
-    }
+    fun parse(naturalKronSchedule: String): String
+}
 
-    /**
-     * Checks if a string is a valid cron expression
-     * @param string the expression to check
-     * @param style the style of the expression, default is [KronStyle.UNIX]
-     */
-    fun isValid(string: String, style: KronStyle = KronStyle.UNIX): Boolean {
-        if (string == "@reboot") {
-            return true
-        }
+internal fun NaturalKronParser() = object : NaturalKronParser {
+    override fun parse(naturalKronSchedule: String): String {
+        val lexer = CronGrammarLexer(CharStreams.fromString(naturalKronSchedule))
+        val tokens = CommonTokenStream(lexer)
+        val parser = CronGrammarParser(tokens)
+        val tree = parser.cron()
+
         return try {
-            fromString(string, style)
-            true
-        } catch (e: ParseException) {
-            false
+            val cronGenerator = NaturalKronExpressionGenerator()
+            cronGenerator.visit(tree)
+        } catch (e: Exception) {
+            throw KronParsingException("An error occurred while parsing the expression: [$naturalKronSchedule]", e)
         }
     }
 }
-
-

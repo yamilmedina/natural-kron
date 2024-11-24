@@ -14,7 +14,7 @@ import org.antlr.v4.runtime.tree.ParseTree
  *
  * @see <a href="https://www.quartz-scheduler.org/documentation/quartz-2.3.0/tutorials/crontrigger.html#format">Cron Expressions Format- Quartz</a>
  */
-class NaturalKronExpressionGenerator : CronGrammarBaseVisitor<String>() {
+internal class NaturalKronExpressionGenerator : CronGrammarBaseVisitor<String>() {
 
     override fun visit(tree: ParseTree?): String {
         val result: String? = super.visit(tree)
