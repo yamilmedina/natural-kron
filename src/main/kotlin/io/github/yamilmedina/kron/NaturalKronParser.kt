@@ -27,7 +27,7 @@ interface NaturalKronParser {
     fun parse(naturalKronSchedule: String): String
 }
 
-internal fun NaturalKronParser() = object : NaturalKronParser {
+fun NaturalKronParser() = object : NaturalKronParser {
     override fun parse(naturalKronSchedule: String): String {
         val lexer = CronGrammarLexer(CharStreams.fromString(naturalKronSchedule))
         val tokens = CommonTokenStream(lexer)
