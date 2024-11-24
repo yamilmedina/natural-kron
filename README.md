@@ -67,10 +67,12 @@ This is a starting point for now, so these things are not supported yet (most li
 
 ## Note ##
 
-Up to version 1.0.1, the library was a direct port of [this library](https://github.com/bpolaszek/natural-cron-expression/)
-from PHP to Kotlin.
-The library was refactored to be more Kotlin idiomatic and to add some features, but rewritten completely from scratch,
+Up to version 1.0.1, the library was inspired, and a direct port
+of [this library](https://github.com/bpolaszek/natural-cron-expression/)
+from PHP to Kotlin. The library was refactored to be more Kotlin idiomatic and to add some features, but rewritten
+completely from scratch,
 due to lack of test and not scalable code.
+
 In version 2.0.0, the library was refactored to use ANTLR4 to parse the input.
 
 ## License ##
