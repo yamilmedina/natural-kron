@@ -1,0 +1,58 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [ opened, synchronize ]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  pipeline:
+    name: Run tests and checks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: 11
+
+      - name: Gradle setup
+        uses: gradle/actions/setup-gradle@v3
+
+      - name: Validate gradle wrapper
+        uses: gradle/wrapper-validation-action@v2
+
+      - name: Run unit tests
+        run: |
+          ./gradlew test --parallel
+
+      - name: Publish unit test report
+        uses: EnricoMi/publish-unit-test-result-action/composite@v2.7
+        if: always()
+        with:
+          files: |
+            **/build/test-results/**/*.xml
+
+      - name: Run coverage
+        run: ./gradlew koverXmlReport
+
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v4.0.1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          slug: yamilmedina/natural-kron
+
+      - name: Cleanup gradle cache
+        # Remove some files from the Gradle cache, so they aren't cached by GitHub Actions.
+        # Restoring these files from a GitHub Actions cache might cause problems for future builds.
+        run: |
+          rm -f ~/.gradle/caches/modules-2/modules-2.lock
+          rm -f ~/.gradle/caches/modules-2/gc.properties

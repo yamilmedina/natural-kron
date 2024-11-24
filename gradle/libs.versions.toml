@@ -1,0 +1,17 @@
+[versions]
+kotlin = "1.9.23"
+maven-publish = "0.28.0"
+kover = "0.7.4"
+junit = "5.10.2"
+antlr = "4.13.1"
+
+[plugins]
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+maven-publish = { id = "com.vanniktech.maven.publish", version.ref = "maven-publish" }
+kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }
+
+[libraries]
+kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.ref = "kotlin" }
+junit-params = { group = "org.junit.jupiter", name = "junit-jupiter-params", version.ref = "junit" }
+antlr-antlr4 = { module = "org.antlr:antlr4", version.ref = "antlr" }
+antlr-runtime = { module = "org.antlr:antlr4-runtime", version.ref = "antlr" }
