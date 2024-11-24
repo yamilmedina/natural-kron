@@ -29,23 +29,30 @@ sourceSets {
     }
 }
 
-tasks.generateGrammarSource {
-    maxHeapSize = "64m"
-    arguments = arguments + listOf("-visitor", "-long-messages")
-    arguments = arguments + listOf("-package", "io.github.yamilmedina.kron.internal.antlr")
-    outputDirectory = file("${project.layout.buildDirectory.get()}/generated/antlr/io/github/yamilmedina/kron/internal/antlr")
-}
+tasks.apply {
+    generateGrammarSource {
+        maxHeapSize = "64m"
+        arguments = arguments + listOf("-visitor", "-long-messages")
+        arguments = arguments + listOf("-package", "io.github.yamilmedina.kron.internal.antlr")
+        outputDirectory =
+            file("${project.layout.buildDirectory.get()}/generated/antlr/io/github/yamilmedina/kron/internal/antlr")
+    }
 
-tasks.test {
-    useJUnitPlatform()
-}
+    test {
+        useJUnitPlatform()
+    }
 
-tasks.compileKotlin {
-    dependsOn(tasks.generateGrammarSource)
-}
+    compileTestKotlin {
+        dependsOn(generateTestGrammarSource)
+    }
 
-tasks.compileTestKotlin {
-    dependsOn(tasks.generateTestGrammarSource)
+    compileKotlin {
+        dependsOn(generateGrammarSource)
+    }
+
+    kotlinSourcesJar {
+        dependsOn(generateGrammarSource)
+    }
 }
 
 kotlin {
