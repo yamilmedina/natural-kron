@@ -1,5 +1,6 @@
 package io.github.yamilmedina.kron
 
+import io.github.yamilmedina.kron.internal.StrictErrorListener
 import io.github.yamilmedina.kron.internal.antlr.CronGrammarLexer
 import io.github.yamilmedina.kron.internal.antlr.CronGrammarParser
 import org.antlr.v4.runtime.CharStreams
@@ -29,16 +30,49 @@ interface NaturalKronParser {
 
 fun NaturalKronParser() = object : NaturalKronParser {
     override fun parse(naturalKronSchedule: String): String {
-        val lexer = CronGrammarLexer(CharStreams.fromString(naturalKronSchedule))
+        val input = naturalKronSchedule.trim()
+        val lexer = CronGrammarLexer(CharStreams.fromString(input))
+        val lexerErrorListener = StrictErrorListener()
+        lexer.removeErrorListeners()
+        lexer.addErrorListener(lexerErrorListener)
+
         val tokens = CommonTokenStream(lexer)
         val parser = CronGrammarParser(tokens)
+        val parserErrorListener = StrictErrorListener()
+        parser.removeErrorListeners()
+        parser.addErrorListener(parserErrorListener)
+
         val tree = parser.cron()
 
+        lexerErrorListener.error()?.let {
+            throw KronParsingException.lexical(input, it)
+        }
+        parserErrorListener.error()?.let {
+            throw KronParsingException.syntactic(input, it)
+        }
+
         return try {
-            val cronGenerator = NaturalKronExpressionGenerator()
-            cronGenerator.visit(tree)
+            val schedule = ScheduleVisitor().visit(tree.schedule())
+                ?: throw KronParsingException.syntactic(input, "Could not parse schedule")
+            validateTime(input, schedule)
+            QuartzCronGenerator.generate(schedule)
+        } catch (e: KronParsingException) {
+            throw e
         } catch (e: Exception) {
-            throw KronParsingException("An error occurred while parsing the expression: [$naturalKronSchedule]", e)
+            throw KronParsingException.semantic(
+                input,
+                e.message ?: "An unknown error occurred while generating the cron expression",
+                e
+            )
+        }
+    }
+
+    private fun validateTime(input: String, schedule: NormalizedSchedule) {
+        if (schedule.hour !in 0..23) {
+            throw KronParsingException.semantic(input, "Invalid hour: ${schedule.hour}. Expected a value between 0 and 23.")
+        }
+        if (schedule.minute !in 0..59) {
+            throw KronParsingException.semantic(input, "Invalid minute: ${schedule.minute}. Expected a value between 0 and 59.")
         }
     }
 }

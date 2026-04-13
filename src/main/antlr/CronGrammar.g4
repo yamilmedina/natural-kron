@@ -4,13 +4,38 @@ options {
     caseInsensitive = true;
 }
 
-// Parser rules
-cron    : everyWorkday | everySpecificDay;
-everyWorkday : 'every' 'workday' 'at' TIME;
-everySpecificDay : 'every' SPECIFIC_DAY 'at' TIME;
+cron        : schedule EOF;
+schedule    : EVERY daySelector AT timeClause;
+daySelector : WORKDAY | WEEKDAY | WEEKDAYS | DAY_ALIAS | SPECIFIC_DAY;
+timeClause  : TIME;
 
-// Lexer rules
-SPECIFIC_DAY : 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday' | 'day';
-TIME         : [0-2][0-9] ':' [0-5][0-9];
-INT          : [0-9]+;
-WS           : [ \t\r\n]+ -> skip;
+EVERY : 'every';
+AT : 'at';
+
+WORKDAY : 'workday';
+WEEKDAY : 'weekday';
+WEEKDAYS : 'weekdays';
+DAY_ALIAS : 'day' | 'daily' | 'everyday';
+
+SPECIFIC_DAY
+    : 'monday'
+    | 'tuesday'
+    | 'wednesday'
+    | 'thursday'
+    | 'friday'
+    | 'saturday'
+    | 'sunday'
+    | 'mon'
+    | 'tue'
+    | 'wed'
+    | 'thu'
+    | 'fri'
+    | 'sat'
+    | 'sun'
+    ;
+
+TIME : DIGIT DIGIT? ':' DIGIT DIGIT;
+
+fragment DIGIT : [0-9];
+
+WS : [ \t\r\n]+ -> skip;

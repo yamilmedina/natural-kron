@@ -48,6 +48,16 @@ val cronExpression = NaturalKronParser().parse(input)
 assertEquals("0 11 10 ? * SAT", cronExpression) //---> This is a valid Quartz cron expression
 ```
 
+Supported expressions currently include:
+
+- `every workday at 10:15`
+- `every weekday at 10:15`
+- `every monday at 8:05`
+- `every mon at 8:05`
+- `every day at 09:00`
+- `every daily at 08:30`
+- `every everyday at 14:45`
+
 ## Implementation details ##
 
 This library uses an ANTLR4 grammar to parse the input. The grammar is defined in the `CronGrammar.g4` file.
@@ -60,6 +70,7 @@ future.
 This library is a side quest project born into the requirements of a bigger project.
 This is a starting point for now, so these things are not supported yet (most likely I missed some):
 
+- `am/pm` expressions (e.g. `every monday at 10pm`)
 - yearly expressions (e.g. `every day during 2005` -> `0 0 0 ? * * 2005`)
 - step every x minutes/hours/days/weeks/months (e.g. `every 5 minutes` -> `0 0/5 * ? * *`)
 - ranges of values (e.g. `every day between 10 and 20` -> `0 0 0 10-20 * ?`)

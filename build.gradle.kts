@@ -19,7 +19,9 @@ dependencies {
     antlr(libs.antlr.antlr4)
     implementation(libs.antlr.runtime)
     testImplementation(libs.kotlin.test)
+    testImplementation(libs.junit.jupiter)
     testImplementation(libs.junit.params)
+    testRuntimeOnly(libs.junit.platform.launcher)
 }
 
 sourceSets {
@@ -56,9 +58,9 @@ tasks.apply {
 }
 
 kotlin {
-    jvmToolchain(8)
+    jvmToolchain(21)
     compilerOptions {
-        jvmTarget.set(JvmTarget.JVM_1_8)
+        jvmTarget.set(JvmTarget.JVM_21)
     }
 }
 
@@ -70,4 +72,3 @@ afterEvaluate {
         }
     }
 }
-
